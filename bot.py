@@ -2,20 +2,46 @@ import telebot
 import os
 from flask import Flask
 from threading import Thread
+from groq import Groq
 
-# 1. Telegram Bot (Aapka Agent)
+# 1. API Keys (Chaabiyan)
 BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
+
+# 2. Engines Initialize Karna
 bot = telebot.TeleBot(BOT_TOKEN)
+groq_client = Groq(api_key=GROQ_API_KEY)
+
+# 3. Master Prompt (Aapke Bot ka Character)
+SYSTEM_PROMPT = """Tu TrendVault ka Master AI Agent hai. Tera boss Ansh hai, jo ek 17 saal ka ambitious tech-founder hai. 
+Tu Hinglish mein baat karega. Tera kaam digital products, SaaS, automation, aur marketing mein Ansh ki help karna hai. 
+Tera tone ekdum smart, helpful, aur ek wafadaar assistant jaisa hona chahiye. Faltu ki lambi baatein mat karna, point par baat karna."""
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "Hello Boss! Main TrendVault ka Master AI Agent zinda ho chuka hoon. 100% Free Server par!")
+    bot.reply_to(message, "Hello Boss! Mera Groq AI dimaag poori tarah activate ho chuka hai. Boliye, aaj kaunsa naya trend hijack karna hai ya kaunsa product banayen?")
 
 @bot.message_handler(func=lambda message: True)
-def auto_reply(message):
-    bot.reply_to(message, "Boss, main abhi sun raha hoon. Apna Groq API fit karne ka order dijiye!")
+def ai_reply(message):
+    try:
+        # Telegram par 'typing...' dikhane ke liye
+        bot.send_chat_action(message.chat.id, 'typing')
+        
+        # Groq se jawab mangna
+        chat_completion = groq_client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": message.text}
+            ],
+            model="llama3-8b-8192", # Duniya ka sabse fast free AI model
+        )
+        response = chat_completion.choices[0].message.content
+        bot.reply_to(message, response)
+        
+    except Exception as e:
+        bot.reply_to(message, f"Boss, dimaag mein thoda error aa gaya: {str(e)}\n\n(Render par Groq API key theek se dali hai na?)")
 
-# 2. The Bypass Server (Render ko jagane ke liye)
+# 4. The Bypass Server (Render ko jagane ke liye)
 app = Flask(__name__)
 @app.route('/')
 def home():
@@ -24,9 +50,9 @@ def home():
 def run_server():
     app.run(host="0.0.0.0", port=8080)
 
-# 3. Dono ko ek sath start karna
+# 5. Start Everything
 if __name__ == "__main__":
     server_thread = Thread(target=run_server)
     server_thread.start()
-    print("Engine Started! Bot is running...")
+    print("Engine with Groq Brain Started!")
     bot.infinity_polling()
