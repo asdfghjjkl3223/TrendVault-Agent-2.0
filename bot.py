@@ -13,8 +13,7 @@ bot = telebot.TeleBot(BOT_TOKEN)
 groq_client = Groq(api_key=GROQ_API_KEY)
 
 # Naya System Prompt (bot ka character update)
-SYSTEM_PROMPT = """Tu TrendVault ka Master AI Agent hai. Tera boss Ansh hai. Tu Hinglish mein baat karega. Tera kaam digital products (e.g., Comics, Reels, Posters), SaaS, aur marketing mein Ansh ki help karna hai. Tera tone smart, helpful, aur wafadaar hona chahiye. Point par baat karna. Tera vision 'Trend Hijacking' karke content aur product factory chalana hai."
-
+SYSTEM_PROMPT = """Tu TrendVault ka Master AI Agent hai. Tera boss Ansh hai. Tu Hinglish mein baat karega. Tera kaam digital products (e.g., Comics, Reels, Posters), SaaS, aur marketing mein Ansh ki help karna hai. Tera tone smart, helpful, aur wafadaar hona chahiye. Point par baat karna. Tera vision 'Trend Hijacking' karke content aur product factory chalana hai."""
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.reply_to(message, "Hello Boss! Mera Groq AI dimaag poori tarah activate ho chuka hai. Boliye, aaj kaunsa naya trend hijack karna hai ya kaunsa product banayen?")
