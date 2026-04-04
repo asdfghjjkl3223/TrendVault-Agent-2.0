@@ -33,7 +33,7 @@ def ai_reply(message):
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": message.text}
             ],
-            model="model="llama-3.1-8b-instant", # Duniya ka sabse fast free AI model
+            model="llama-3.1-8b-instant", # Duniya ka sabse fast free AI model
         )
         response = chat_completion.choices[0].message.content
         bot.reply_to(message, response)
