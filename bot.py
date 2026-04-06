@@ -63,6 +63,18 @@ def make_new_product(message):
             "image_url": image_url
         }).execute()
 
+# 3. Upload to Supabase (Dukan Par Live)
+        data, count = supabase.table('products').insert({
+            "title": product_title,
+            "description": product_desc,
+            "price": product_price,
+            "image_url": image_url,
+            "category": "Software", # <-- YE NAYI LINE ADD KARNI HAI
+            "drive_link": "https://example.com/download" # (Optional: Dukan shayad bina link ke product bechne se roke)
+        }).execute()
+
+
+        
         # 4. Boss ko report
         bot.reply_to(message, 
             f"✅ **BOSS, NAYA MAAL LIVE HO GAYA!** 🎉\n\n"
